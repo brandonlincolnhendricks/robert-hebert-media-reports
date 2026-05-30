@@ -1,0 +1,4 @@
+# Push only the manifest and Code.js. Everything else stays local.
+**/**
+!Code.js
+!appsscript.json

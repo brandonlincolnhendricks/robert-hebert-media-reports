@@ -11,7 +11,10 @@
 // CONFIGURATION - Update these values
 // ===========================================
 
-var SPREADSHEET_ID = '1kFcA_-uWAdSfEszgDPeLaMNgR-2hwNdnfMOiG41dOgY';
+// MUST match the spreadsheet the Apps Script report generator is bound to
+// (Extensions > Apps Script on that sheet). They were previously two different
+// sheets, so exported data never reached the generator.
+var SPREADSHEET_ID = '1NRlxowBBoDkaOhVBCgkFqVMMhMtIFYNNfAgoJ5vcpps';
 
 // Map Google Ads account names to spreadsheet row numbers
 // Row 2 = first data row (row 1 is headers)
@@ -79,7 +82,7 @@ function main() {
 
 function getPerformanceData(startDate, endDate) {
   var report = AdsApp.report(
-    'SELECT Cost, Impressions, Clicks ' +
+    'SELECT Cost, Impressions, Clicks, Conversions, VideoViews ' +
     'FROM ACCOUNT_PERFORMANCE_REPORT ' +
     'DURING ' + formatDateForQuery(startDate) + ',' + formatDateForQuery(endDate)
   );
@@ -88,20 +91,24 @@ function getPerformanceData(startDate, endDate) {
   var data = {
     spend: 0,
     impressions: 0,
-    clicks: 0
+    clicks: 0,
+    conversions: 0,
+    views: 0
   };
 
   while (rows.hasNext()) {
     var row = rows.next();
-    // Cost comes in micros, convert to dollars
     var cost = parseFloat(row['Cost'].replace(/,/g, '')) || 0;
     data.spend += cost;
     data.impressions += parseInt(row['Impressions'].replace(/,/g, ''), 10) || 0;
     data.clicks += parseInt(row['Clicks'].replace(/,/g, ''), 10) || 0;
+    data.conversions += parseFloat(row['Conversions'].replace(/,/g, '')) || 0;
+    data.views += parseInt(row['VideoViews'].replace(/,/g, ''), 10) || 0;
   }
 
   // Round spend to 2 decimal places
   data.spend = Math.round(data.spend * 100) / 100;
+  data.conversions = Math.round(data.conversions * 100) / 100;
 
   return data;
 }
@@ -115,14 +122,14 @@ function updateSpreadsheet(row, accountName, thisWeekData, prevWeekData, thisWee
 
   // Update "This Week" sheet
   var thisWeekSheet = spreadsheet.getSheetByName('This Week');
-  thisWeekSheet.getRange(row, 1, 1, 4).setValues([
-    [accountName, thisWeekData.spend, thisWeekData.impressions, thisWeekData.clicks]
+  thisWeekSheet.getRange(row, 1, 1, 6).setValues([
+    [accountName, thisWeekData.spend, thisWeekData.impressions, thisWeekData.clicks, thisWeekData.conversions, thisWeekData.views]
   ]);
 
   // Update "Previous Week" sheet
   var prevWeekSheet = spreadsheet.getSheetByName('Previous Week');
-  prevWeekSheet.getRange(row, 1, 1, 4).setValues([
-    [accountName, prevWeekData.spend, prevWeekData.impressions, prevWeekData.clicks]
+  prevWeekSheet.getRange(row, 1, 1, 6).setValues([
+    [accountName, prevWeekData.spend, prevWeekData.impressions, prevWeekData.clicks, prevWeekData.conversions, prevWeekData.views]
   ]);
 
   // Update "Date Range" sheet

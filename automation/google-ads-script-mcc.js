@@ -10,7 +10,11 @@
 // CONFIGURATION
 // ===========================================
 
-var SPREADSHEET_ID = '1kFcA_-uWAdSfEszgDPeLaMNgR-2hwNdnfMOiG41dOgY';
+// MUST match the spreadsheet the Apps Script report generator is bound to
+// (Extensions > Apps Script on that sheet). They were previously two different
+// sheets, so exported data never reached the generator. Do not change without
+// updating the bound report sheet to match.
+var SPREADSHEET_ID = '1NRlxowBBoDkaOhVBCgkFqVMMhMtIFYNNfAgoJ5vcpps';
 
 // Map Google Ads Customer IDs to spreadsheet rows
 // Format: 'XXX-XXX-XXXX': row number
@@ -78,12 +82,12 @@ function main() {
     Logger.log('  Prev week - Spend: $' + prevWeekData.spend + ', Impressions: ' + prevWeekData.impressions + ', Clicks: ' + prevWeekData.clicks);
 
     // Update spreadsheet
-    thisWeekSheet.getRange(config.row, 1, 1, 4).setValues([
-      [config.name, thisWeekData.spend, thisWeekData.impressions, thisWeekData.clicks]
+    thisWeekSheet.getRange(config.row, 1, 1, 6).setValues([
+      [config.name, thisWeekData.spend, thisWeekData.impressions, thisWeekData.clicks, thisWeekData.conversions, thisWeekData.views]
     ]);
 
-    prevWeekSheet.getRange(config.row, 1, 1, 4).setValues([
-      [config.name, prevWeekData.spend, prevWeekData.impressions, prevWeekData.clicks]
+    prevWeekSheet.getRange(config.row, 1, 1, 6).setValues([
+      [config.name, prevWeekData.spend, prevWeekData.impressions, prevWeekData.clicks, prevWeekData.conversions, prevWeekData.views]
     ]);
 
     processedCount++;
@@ -102,7 +106,7 @@ function main() {
 
 function getPerformanceData(startDate, endDate) {
   var report = AdsApp.report(
-    'SELECT Cost, Impressions, Clicks ' +
+    'SELECT Cost, Impressions, Clicks, Conversions, VideoViews ' +
     'FROM ACCOUNT_PERFORMANCE_REPORT ' +
     'DURING ' + startDate + ',' + endDate
   );
@@ -111,7 +115,9 @@ function getPerformanceData(startDate, endDate) {
   var data = {
     spend: 0,
     impressions: 0,
-    clicks: 0
+    clicks: 0,
+    conversions: 0,
+    views: 0
   };
 
   while (rows.hasNext()) {
@@ -120,9 +126,12 @@ function getPerformanceData(startDate, endDate) {
     data.spend += cost;
     data.impressions += parseInt(row['Impressions'].replace(/,/g, ''), 10) || 0;
     data.clicks += parseInt(row['Clicks'].replace(/,/g, ''), 10) || 0;
+    data.conversions += parseFloat(row['Conversions'].replace(/,/g, '')) || 0;
+    data.views += parseInt(row['VideoViews'].replace(/,/g, ''), 10) || 0;
   }
 
   data.spend = Math.round(data.spend * 100) / 100;
+  data.conversions = Math.round(data.conversions * 100) / 100;
   return data;
 }
 
