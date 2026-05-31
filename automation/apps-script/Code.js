@@ -450,7 +450,25 @@ function buildPrimaryInsight_(profile, current, previous, changes) {
     return createInsightCard('warning', 'Reach Pullback',
       'Video views declined ' + Math.abs(changes.views).toFixed(0) + '% week-over-week. Recommend reviewing budget pacing and creative rotation to sustain reach.');
   }
-  return '';
+  return createInsightCard('success', 'Steady Reach',
+    'The campaign delivered ' + formatNumber(current.impressions) + ' impressions and ' + formatNumber(current.views) + ' video views at a ' + current.viewRate.toFixed(1) + '% view rate, holding awareness steady week-over-week.');
+}
+
+function generateVideoRecommendations_(current, changes) {
+  var recs = [];
+  if (changes.views > 30) {
+    recs.push('Reach is scaling well, maintain budget and watch view rate as volume grows');
+  } else if (changes.views < -15) {
+    recs.push('Review budget pacing and refresh creative to recover reach');
+  }
+  if (current.viewRate < 15) {
+    recs.push('Test stronger hooks in the first 5 seconds to lift view rate');
+  } else {
+    recs.push('Strong view rate, consider expanding to similar audiences to scale reach');
+  }
+  recs.push('Build remarketing audiences from video engagement for lower-funnel follow-up');
+  recs.push('Rotate in fresh creative to limit frequency fatigue');
+  return recs.slice(0, 4).map(function (r, i) { return (i + 1) + ') ' + r; }).join('<br>');
 }
 
 function generateSummary(clientName, current, changes, profile) {
@@ -502,6 +520,14 @@ function generateInsights(current, previous, changes, profile) {
 
   // Profile-specific headline insight (leads for lead-gen, reach for video)
   html += buildPrimaryInsight_(profile, current, previous, changes);
+
+  // Video/awareness uses reach-oriented insights only. The search-oriented
+  // CTR and CPC warnings below do not apply to a video campaign, where a low
+  // CTR is normal and would read as a false problem to the client.
+  if (profile === 'video') {
+    html += createInsightCard('info', 'Recommendations', generateVideoRecommendations_(current, changes));
+    return html;
+  }
 
   // CTR insight
   if (current.ctr >= 10) {
