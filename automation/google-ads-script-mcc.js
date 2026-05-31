@@ -52,8 +52,10 @@ function main() {
   ]);
   Logger.log('Date ranges updated');
 
-  // Process each account
-  var accountSelector = AdsManagerApp.accounts();
+  // Process ONLY the 3 configured accounts. Without withIds(), the selector
+  // walks the entire MCC tree, which blows the 30-minute limit on a large
+  // agency manager account. withIds() fetches just these accounts directly.
+  var accountSelector = AdsManagerApp.accounts().withIds(Object.keys(CLIENT_CONFIG));
   var accountIterator = accountSelector.get();
 
   var processedCount = 0;
