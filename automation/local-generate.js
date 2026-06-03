@@ -102,6 +102,20 @@ clients.forEach((client) => {
   html = html.replace('</style>', PRINT_CSS + '\n    </style>');
   // "Page 1 of 1" is meaningless on a multi-page PDF and slightly wrong; drop it.
   html = html.replace(' | Page 1 of 1', '');
+
+  // ReOptica: conversion tracking was only just applied to this account, so the
+  // generator's default "No Conversions Recorded -> verify tracking is firing"
+  // warning is misleading. Reframe that one card as a positive setup note.
+  if (client.slug === 'reoptica') {
+    html = html
+      .replace('class="insight-icon warning">!</div>', 'class="insight-icon success">&#10003;</div>')
+      .replace('<div class="insight-title">No Conversions Recorded</div>',
+               '<div class="insight-title">Conversion Tracking Now Live</div>')
+      .replace(
+        'No conversions were tracked this week. Recommend verifying conversion tracking is firing and reviewing lead-form and landing-page performance.',
+        'Conversion tracking was implemented on this account this week, so no historical conversions appear in this report. With tracking now live, lead volume will begin populating in next week&rsquo;s report and going forward.'
+      );
+  }
   const dir = path.join(REPO, client.slug + '-' + folderSuffix);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), html);
