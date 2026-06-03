@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Performance Report | JFTx2025 | May 23, 2026 &ndash; May 29, 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066CC;
+            --success: #059669;
+            --warning: #D97706;
+            --danger: #DC2626;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fff;
+            color: var(--gray-800);
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        .report-container { max-width: 1100px; margin: 0 auto; padding: 40px; }
+        .report-header { border-bottom: 3px solid var(--primary); padding-bottom: 24px; margin-bottom: 32px; }
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .brand { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 1.5px; }
+        .report-date { font-size: 12px; color: var(--gray-500); text-align: right; }
+        .client-name { font-size: 32px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+        .report-title { font-size: 18px; font-weight: 400; color: var(--gray-600); }
+        .report-period { display: inline-block; background: var(--primary); color: white; padding: 6px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; margin-top: 12px; }
+        .executive-summary { background: var(--gray-50); border-left: 4px solid var(--primary); padding: 24px 28px; margin-bottom: 40px; }
+        .summary-title { font-size: 11px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .summary-text { font-size: 16px; color: var(--gray-700); line-height: 1.7; }
+        .summary-text strong { color: var(--gray-900); font-weight: 600; }
+        .kpi-section { margin-bottom: 48px; }
+        .section-header { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--gray-200); }
+        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .kpi-card { background: white; border: 1px solid var(--gray-200); border-radius: 8px; padding: 24px; position: relative; }
+        .kpi-card.highlight { border-color: var(--primary); border-width: 2px; }
+        .kpi-label { font-size: 12px; font-weight: 500; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .kpi-value { font-size: 36px; font-weight: 700; color: var(--gray-900); line-height: 1; margin-bottom: 8px; }
+        .kpi-card.highlight .kpi-value { color: var(--primary); }
+        .kpi-change { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+        .kpi-change.positive { color: var(--success); }
+        .kpi-change.negative { color: var(--danger); }
+        .kpi-change.neutral { color: var(--gray-400); }
+        .kpi-subtitle { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+        .performance-badge { position: absolute; top: 16px; right: 16px; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .performance-badge.excellent { background: #D1FAE5; color: #065F46; }
+        .performance-badge.good { background: #DBEAFE; color: #1E40AF; }
+        .table-section { margin-bottom: 48px; }
+        .data-table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; }
+        .data-table thead { background: var(--gray-50); }
+        .data-table th { padding: 14px 16px; text-align: left; font-size: 11px; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--gray-200); }
+        .data-table th:not(:first-child) { text-align: right; }
+        .data-table td { padding: 16px; border-bottom: 1px solid var(--gray-100); font-size: 14px; }
+        .data-table td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+        .data-table tbody tr:hover { background: var(--gray-50); }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        .metric-name { font-weight: 500; color: var(--gray-800); }
+        .metric-value { font-weight: 600; color: var(--gray-900); }
+        .change-positive { color: var(--success); font-weight: 500; }
+        .change-negative { color: var(--danger); font-weight: 500; }
+        .insights-section { margin-bottom: 48px; }
+        .insight-card { background: white; border: 1px solid var(--gray-200); border-radius: 8px; padding: 24px; margin-bottom: 16px; }
+        .insight-card:last-child { margin-bottom: 0; }
+        .insight-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .insight-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .insight-icon.success { background: #D1FAE5; }
+        .insight-icon.info { background: #DBEAFE; }
+        .insight-icon.warning { background: #FEF3C7; }
+        .insight-title { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+        .insight-text { font-size: 14px; color: var(--gray-600); line-height: 1.6; }
+        .report-footer { border-top: 1px solid var(--gray-200); padding-top: 24px; margin-top: 48px; display: flex; justify-content: space-between; align-items: center; }
+        .footer-brand { font-size: 12px; color: var(--gray-500); }
+        .footer-brand a { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .footer-meta { font-size: 11px; color: var(--gray-400); }
+        @media (max-width: 768px) { .report-container { padding: 20px; } .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } .kpi-value { font-size: 28px; } .header-top { flex-direction: column; gap: 8px; } }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <header class="report-header">
+            <div class="header-top">
+                <div class="brand">Robert Hebert Media</div>
+                <div class="report-date">Report Generated: June 2, 2026<br>Confidential</div>
+            </div>
+            <h1 class="client-name">JFTx2025</h1>
+            <p class="report-title">Weekly Google Ads Performance Report</p>
+            <span class="report-period">May 23, 2026 &ndash; May 29, 2026</span>
+        </header>
+
+        <div class="executive-summary">
+            <div class="summary-title">Executive Summary</div>
+            <p class="summary-text">Reach softened this week. Impressions of <strong>706,805</strong>, video views of <strong>42,319</strong>, clicks of <strong>9,622</strong>, on total investment of <strong>$990.84</strong>.</p>
+        </div>
+
+        <section class="kpi-section">
+            <div class="section-header">Key Performance Indicators</div>
+            <div class="kpi-grid">
+                <div class="kpi-card highlight"><div class="kpi-label">Impressions</div><div class="kpi-value">706,805</div><div class="kpi-change negative">-9.7% vs last week</div></div>
+                <div class="kpi-card highlight"><div class="kpi-label">Video Views</div><div class="kpi-value">42,319</div><div class="kpi-change negative">-20.3% vs last week</div></div>
+                <div class="kpi-card highlight"><span class="performance-badge good">Stable</span><div class="kpi-label">Clicks</div><div class="kpi-value">9,622</div><div class="kpi-change negative">-3.3% vs last week</div></div>
+                <div class="kpi-card"><div class="kpi-label">View Rate</div><div class="kpi-value">6.0%</div><div class="kpi-change negative">-11.8% vs last week</div></div>
+                <div class="kpi-card"><div class="kpi-label">Click-Through Rate</div><div class="kpi-value">1.36%</div><div class="kpi-change positive">+7.1% vs last week</div></div>
+                <div class="kpi-card"><div class="kpi-label">Total Spend</div><div class="kpi-value">$990.84</div><div class="kpi-change positive">-4.2% cost savings</div></div>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <div class="section-header">Detailed Metrics</div>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Metric</th><th>This Week</th><th>Previous Week</th><th>Change</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="metric-name">Total Ad Spend</td><td class="metric-value">$990.84</td><td>$1034.76</td><td class="change-positive">-4.24%</td></tr>
+                    <tr><td class="metric-name">Impressions</td><td class="metric-value">706,805</td><td>782,386</td><td class="change-negative">-9.66%</td></tr>
+                    <tr><td class="metric-name">Video Views</td><td class="metric-value">42,319</td><td>53,125</td><td class="change-negative">-20.34%</td></tr>
+                    <tr><td class="metric-name">View Rate</td><td class="metric-value">5.99%</td><td>6.79%</td><td class="change-negative">-11.82%</td></tr>
+                    <tr><td class="metric-name">Clicks</td><td class="metric-value">9,622</td><td>9,946</td><td class="change-negative">-3.26%</td></tr>
+                    <tr><td class="metric-name">Click-Through Rate (CTR)</td><td class="metric-value">1.36%</td><td>1.27%</td><td class="change-positive">+7.09%</td></tr>
+                    <tr><td class="metric-name">Avg. Cost Per View</td><td class="metric-value">$0.023</td><td>$0.019</td><td class="change-negative">+20.21%</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="insights-section">
+            <div class="section-header">Key Insights & Recommendations</div>
+            
+    <div class="insight-card">
+      <div class="insight-header">
+        <div class="insight-icon warning">!</div>
+        <div class="insight-title">Reach Pullback</div>
+      </div>
+      <p class="insight-text">Video views declined 20% week-over-week. Recommend reviewing budget pacing and creative rotation to sustain reach.</p>
+    </div>
+  
+    <div class="insight-card">
+      <div class="insight-header">
+        <div class="insight-icon info">&rarr;</div>
+        <div class="insight-title">Recommendations</div>
+      </div>
+      <p class="insight-text">1) Review budget pacing and refresh creative to recover reach<br>2) Test stronger hooks in the first 5 seconds to lift view rate<br>3) Build remarketing audiences from video engagement for lower-funnel follow-up<br>4) Rotate in fresh creative to limit frequency fatigue</p>
+    </div>
+  
+        </section>
+
+        <footer class="report-footer">
+            <div class="footer-brand">Prepared by <a href="https://roberthebertmedia.com">Robert Hebert Media</a></div>
+            <div class="footer-meta">Report ID: RHM-JFT-2026-W22 | Page 1 of 1</div>
+        </footer>
+    </div>
+</body>
+</html>
