@@ -72,10 +72,36 @@ const dateRange = {
 const folderSuffix = sandbox.getFolderSuffix(dateRange); // -> may23-29
 console.log('folderSuffix:', folderSuffix);
 
+// Print rules so PDF export never splits a KPI grid or a table across pages
+// (Brandon's PDF house rule: data blocks stay whole, no browser headers/footers).
+const PRINT_CSS = `
+    @media print {
+      @page { size: letter; margin: 0.38in; }
+      html, body { background: #fff !important; font-size: 12px; }
+      .report-container { max-width: 100% !important; padding: 0 !important; }
+      .report-header { margin-bottom: 16px !important; padding-bottom: 12px !important; }
+      .executive-summary { margin-bottom: 18px !important; padding: 14px 18px !important; }
+      .kpi-section, .table-section, .insights-section { margin-bottom: 16px !important; }
+      .section-header { margin-bottom: 12px !important; }
+      .kpi-grid { gap: 12px !important; }
+      .kpi-card { padding: 13px !important; }
+      .kpi-value { font-size: 25px !important; }
+      .data-table td { padding: 8px 14px !important; }
+      .insight-card { padding: 12px !important; margin-bottom: 8px !important; }
+      .insight-header { margin-bottom: 8px !important; }
+      .report-footer { margin-top: 14px !important; padding-top: 12px !important; }
+      .kpi-grid, .data-table, .kpi-card, .insight-card, tr { page-break-inside: avoid; break-inside: avoid; }
+      thead { display: table-header-group; }
+      a[href]:after { content: none !important; }
+    }`;
+
 clients.forEach((client) => {
   const cur = Object.assign({}, thisWeek[client.name]);
   const prev = Object.assign({}, prevWeek[client.name]);
-  const html = sandbox.generateReportHtml(client, cur, prev, dateRange);
+  let html = sandbox.generateReportHtml(client, cur, prev, dateRange);
+  html = html.replace('</style>', PRINT_CSS + '\n    </style>');
+  // "Page 1 of 1" is meaningless on a multi-page PDF and slightly wrong; drop it.
+  html = html.replace(' | Page 1 of 1', '');
   const dir = path.join(REPO, client.slug + '-' + folderSuffix);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), html);

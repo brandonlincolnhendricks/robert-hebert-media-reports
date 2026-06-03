@@ -87,6 +87,26 @@
         .footer-brand a { color: var(--primary); text-decoration: none; font-weight: 500; }
         .footer-meta { font-size: 11px; color: var(--gray-400); }
         @media (max-width: 768px) { .report-container { padding: 20px; } .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } .kpi-value { font-size: 28px; } .header-top { flex-direction: column; gap: 8px; } }
+    
+    @media print {
+      @page { size: letter; margin: 0.38in; }
+      html, body { background: #fff !important; font-size: 12px; }
+      .report-container { max-width: 100% !important; padding: 0 !important; }
+      .report-header { margin-bottom: 16px !important; padding-bottom: 12px !important; }
+      .executive-summary { margin-bottom: 18px !important; padding: 14px 18px !important; }
+      .kpi-section, .table-section, .insights-section { margin-bottom: 16px !important; }
+      .section-header { margin-bottom: 12px !important; }
+      .kpi-grid { gap: 12px !important; }
+      .kpi-card { padding: 13px !important; }
+      .kpi-value { font-size: 25px !important; }
+      .data-table td { padding: 8px 14px !important; }
+      .insight-card { padding: 12px !important; margin-bottom: 8px !important; }
+      .insight-header { margin-bottom: 8px !important; }
+      .report-footer { margin-top: 14px !important; padding-top: 12px !important; }
+      .kpi-grid, .data-table, .kpi-card, .insight-card, tr { page-break-inside: avoid; break-inside: avoid; }
+      thead { display: table-header-group; }
+      a[href]:after { content: none !important; }
+    }
     </style>
 </head>
 <body>
@@ -94,7 +114,7 @@
         <header class="report-header">
             <div class="header-top">
                 <div class="brand">Robert Hebert Media</div>
-                <div class="report-date">Report Generated: June 2, 2026<br>Confidential</div>
+                <div class="report-date">Report Generated: June 3, 2026<br>Confidential</div>
             </div>
             <h1 class="client-name">JFTx2025</h1>
             <p class="report-title">Weekly Google Ads Performance Report</p>
@@ -159,7 +179,7 @@
 
         <footer class="report-footer">
             <div class="footer-brand">Prepared by <a href="https://roberthebertmedia.com">Robert Hebert Media</a></div>
-            <div class="footer-meta">Report ID: RHM-JFT-2026-W22 | Page 1 of 1</div>
+            <div class="footer-meta">Report ID: RHM-JFT-2026-W22</div>
         </footer>
     </div>
 </body>

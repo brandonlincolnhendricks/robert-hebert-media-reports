@@ -5,3 +5,6 @@ node_modules/
 .claude/
 google-ads.yaml
 get_refresh_token.py
+
+# Local client PDF exports - do not publish
+pdf-exports/
